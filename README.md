@@ -96,9 +96,9 @@ It is possible to fit minimal OpenGlory configuration into 83K LUT4 ECP5 FPGA (t
 
 Quake running at ~15 FPS on NaxRiscV:
 
-![](https://github.com/egorxe/doc/tree/main/doc/quake.gif)
+![](https://github.com/egorxe/openglory/blob/main/doc/quake.gif)
 
-Whole videofile is on github wiki.
+Whole videofile is in [project wiki](https://github.com/egorxe/openglory/wiki).
 
 ## TODO
 
