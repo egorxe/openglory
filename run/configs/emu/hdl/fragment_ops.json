@@ -1,0 +1,8 @@
+{
+    "tb" : "hw/gpu_rtl/fragment/tb/files_to_fragment.py",
+    "top" : "fragment_tb_wrapper",
+    "files" : [
+        ["#include", ["file_lists/fragment.json"]],
+        ["fragment/tb/", ["fragment_tb_wrapper.vhd"]]
+    ]
+}

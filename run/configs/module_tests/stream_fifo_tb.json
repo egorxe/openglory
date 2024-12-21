@@ -1,0 +1,8 @@
+{
+    "tb" : "hw/tb/stream_fifo_tb.py",
+    "top" : "stream_fifo_wrapper",
+    "files" : [
+        ["pkg/", ["gpu_pkg.vhd"]],
+        ["utils/", ["afull_fifo.vhd", "stream_fifo.vhd", "stream_fifo_wrapper.vhd"]]
+    ]
+}

@@ -1,0 +1,13 @@
+{
+    "top" : "gpu_pipe_wb",
+    "files" : [
+        ["#include", ["file_lists/gpu_pipe_wb.json"]]
+    ],
+    "synth" : {
+        "board"         : "alinx_axku040",
+        "litex_params"  : ["--l2-bytes=131072", "--l2-size=0", "--with-ethernet", "--xlen=64", "--cpu-type=naxriscv", "--with-coherent-dma", "--bus-standard=axi-lite", "--scala-args=rvc=true,rvf=true,rvd=true,alu-count=2,decode-count=2", "--with-sdcard", "--vivado-max-threads", "20", "--vivado-synth-directive", "RuntimeOptimized", "--vivado-place-directive", "Explore", "--vivado-route-directive", "AggressiveExplore"],
+        "generics"      : {"FB_BASE_REG" : "X\"F0004800\"", "BOARD_NAME" : "AXKU_040", "CAPABILITIES" : "X\"00010001\""},
+        "sys_frequency" : "175000000",
+        "gpu_frequency" : "100000000"
+    }
+}

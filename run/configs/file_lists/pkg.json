@@ -1,0 +1,5 @@
+{
+    "files" : [
+        ["pkg/", ["gpu_pkg.vhd", "rast_pipe_pkg.vhd", "gpu_vertex_pkg.vhd"]]
+    ]
+}

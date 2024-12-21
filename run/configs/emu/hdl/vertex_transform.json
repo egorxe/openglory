@@ -1,0 +1,8 @@
+{
+    "tb" : "hw/tb/files_to_axis.py",
+    "top" : "vertex_transform_axis_wrapper",
+    "files" : [
+        ["#include", ["file_lists/vertex_transform.json"]],
+        ["vertex_transform/", ["vertex_transform_axis_wrapper.vhd"]]
+    ]
+}

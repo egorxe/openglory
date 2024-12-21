@@ -1,0 +1,6 @@
+{
+    "files" : [
+        ["#include", ["file_lists/vertex_transform.json"]],
+        ["vertex_transform/", ["vertex_transform_axis_wrapper.vhd", "vertex_transform_axis_type_wrapper.vhd"]]
+    ]
+}

@@ -1,0 +1,8 @@
+{
+    "tb" : "hw/tb/files_to_axis.py",
+    "top" : "rast_pipe_axis_wrapper",
+    "files" : [
+        ["#include", ["file_lists/rasterizer.json"]],
+        ["rasterizer/", ["rast_pipe_axis_wrapper.vhd"]]
+    ]
+}

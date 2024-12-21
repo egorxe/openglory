@@ -1,0 +1,39 @@
+# Constant offsets
+GPU_REGS_BASE   = 0x90000000
+GPU_MEMBUF_BASE = 0x40000000
+
+# Reg addresses
+GPU_REG_CTRL_OFF    = 0x00
+GPU_REG_CMDSIZE_OFF = 0x04
+GPU_REG_CMDBASE_OFF = 0x08
+GPU_REG_FBBASE_OFF  = 0x0C
+GPU_REG_STAT_OFF    = 0x00
+GPU_REG_FRAME_OFF   = 0x08
+GPU_REG_CAP_OFF     = 0x0C
+GPU_REG_BOARD0_OFF  = 0x10
+GPU_REG_BOARD1_OFF  = 0x14
+GPU_REG_RESET_ADDR  = 0x18
+
+# Cmd reg bits
+GPU_CTRL_CMD        = 0x01
+GPU_CTRL_FBSWITCH   = 0x02
+GPU_CTRL_CLEAR      = 0x04
+GPU_CTRL_ZCLEAR     = 0x08
+
+# Capabilities reg shifts
+GPU_CAP_LIGHTING    = 8
+
+# Pipeline commands (only ones used in python)
+GPU_PIPE_CMD_SYNC       = 0xFFFF0010
+GPU_PIPE_CMD_CLEAR_FB   = 0xFFFF0011
+GPU_PIPE_CMD_FRAGMENT   = 0xFFFF0320
+
+# Masks
+GPU_BASE_MASK           = 0xF0000000
+GPU_ADDR_MASK           = 0x0FFFFFFF
+GPU_PIPE_CMD_MASK       = 0xFFFF0000
+GPU_CMDBASE_MASK        = (~((1<<16)-1)) & GPU_ADDR_MASK
+
+# Utils functions
+def PipeCmdArgsNum(cmd):
+    return ((cmd & 0xFF00) >> 8)

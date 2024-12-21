@@ -1,0 +1,8 @@
+{
+    "files" : [
+        ["#include", ["file_lists/fpu.json"]],
+        ["#include", ["file_lists/pkg.json"]],
+        ["utils/", ["afull_fifo.vhd"]],
+        ["rasterizer/", ["rast_pipe_precomp.vhd", "rast_pipe_incr.vhd", "rast_edge_mac.vhd", "rast_pipe_edge.vhd", "rast_pipe_barycentric.vhd", "rast_pipe_storage.vhd", "rast_pipe.vhd"]]
+    ]
+}

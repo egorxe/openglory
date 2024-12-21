@@ -1,0 +1,6 @@
+{
+    "files" : [
+        ["#include", ["file_lists/rasterizer.json"]],
+        ["rasterizer/", ["rast_pipe_axis_wrapper.vhd", "rasterizer_axis_type_wrapper.vhd"]]
+    ]
+}

@@ -1,0 +1,8 @@
+{
+    "files" : [
+        ["#include", ["file_lists/fpu.json"]],
+        ["#include", ["file_lists/pkg.json"]],
+        ["#include", ["file_lists/fifo.json"]],
+        ["vertex_transform/", ["M4_mul_V4/M4_mul_V4_mac.vhd", "clipping_viewport.vhd", "vertex_transform.vhd"]]
+    ]
+}

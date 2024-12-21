@@ -1,0 +1,9 @@
+{
+    "tb" : "hw/gpu_rtl/rasterizer/tb/rasterizer_axis_tb.py",
+    "top" : "rast_pipe_axis_wrapper",
+    "files" : [
+        ["#include", ["file_lists/rasterizer.json"]],
+        ["rasterizer/", ["rast_pipe_axis_wrapper.vhd"]]
+    ],
+    "add_files" : ["run/emu/lib/rasterizer.so", "hw/tb/conversions.py"]
+}

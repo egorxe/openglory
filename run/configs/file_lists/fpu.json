@@ -1,0 +1,5 @@
+{
+    "files" : [
+        ["fpu/", ["riscv_fpu_pkg.vhd", "riscv_fpu.vhd", "fmac.vhd", "reciprocal.vhd"]]
+    ]
+}

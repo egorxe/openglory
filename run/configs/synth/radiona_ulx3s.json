@@ -1,0 +1,14 @@
+{
+    "top" : "gpu_pipe_wb",
+    "files" : [
+        ["#include", ["file_lists/gpu_pipe_wb.json"]]
+    ],
+    "synth" : {
+        "board"         : "radiona_ulx3s",
+        "vhdl2verilog"  : "true",
+        "litex_params"  : ["--l2-size=2048", "--ecppack-compress", "--cpu-type=None", "--with-uartbone", "--uart-baudrate=1000000", "--csr-csv=csr.csv",  "--yosys-abc9", "--device=LFE5U-85F", "--sdram-module=IS42S16160", "--sdram-rate=1:2"],
+        "generics"      : {"FB_BASE_REG" : "X\"00003000\"", "CAPABILITIES" : "X\"00020001\"", "BOARD_NAME" : "RadULX3S"},
+        "sys_frequency" : "40000000",
+        "gpu_frequency" : "20000000"
+    }
+}

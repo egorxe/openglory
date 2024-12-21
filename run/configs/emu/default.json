@@ -1,0 +1,31 @@
+{
+    "emu" :
+    {
+        "display_size_x"    : 640,
+        "display_size_y"    : 480,
+        "etherbone_regs"    : "true",
+        "stages"            :
+        [
+            {
+                "comment"   : "Matrix vertex transformation",
+                "binary"    : "bin/vertex_transform"
+            },
+            {
+                "comment"   : "Illumination",
+                "binary"    : "bin/illumination"
+            },
+            {
+                "comment"   : "Rasterizer",
+                "binary"    : "bin/rasterizer"
+            },
+            {
+                "comment"   : "Texturing",
+                "binary"    : "bin/texturing"
+            },
+            {
+                "comment"   : "Fragment operations",
+                "binary"    : "bin/fragment_ops"
+            }
+        ]
+    }
+}

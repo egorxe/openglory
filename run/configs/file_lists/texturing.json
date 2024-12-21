@@ -1,0 +1,7 @@
+{
+    "files" : [
+        ["#include", ["file_lists/pkg.json"]],
+        ["#include", ["file_lists/fifo.json"]],
+        ["texturing/", ["texturing_axis.vhd"]]
+    ]
+}

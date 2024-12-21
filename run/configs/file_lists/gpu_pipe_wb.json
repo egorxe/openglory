@@ -1,0 +1,8 @@
+{
+    "files" : [
+        ["#include", ["file_lists/fpu.json"]],
+        ["#include", ["file_lists/fifo.json"]],
+        ["#include", ["file_lists/rasterizer_axis.json", "file_lists/vertex_transform_axis.json", "file_lists/texturing.json", "file_lists/fragment.json"]],
+        ["top/", ["gpu_pipe_wb.vhd"]]
+    ]
+}

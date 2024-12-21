@@ -1,0 +1,7 @@
+{
+    "files" : [
+        ["#include", ["file_lists/pkg.json"]],
+        ["#include", ["file_lists/fifo.json"]],
+        ["fragment/", ["fragment_axis.vhd"]]
+    ]
+}

@@ -1,0 +1,32 @@
+{
+    "emu" :
+    {
+        "display_size_x"    : 640,
+        "display_size_y"    : 480,
+        "etherbone_regs"    : "true",
+        "stages"            :
+        [
+            {
+                "name"      : "vertex_transform",
+                "comment"   : "Matrix vertex transformation",
+                "binary"    : "bin/vertex_transform"
+            },
+            {
+                "name"      : "rasterizer",
+                "comment"   : "Rasterizer",
+                "binary"    : "bin/rasterizer"
+            },
+            {
+                "name"      : "texturing",
+                "comment"   : "Texturing",
+                "binary"    : "cocotb/texturing/texturing",
+                "cocotb"    : "emu/hdl/texturing.json"
+            },
+            {
+                "name"      : "fragment_ops",
+                "comment"   : "Fragment operations",
+                "binary"    : "bin/fragment_ops"
+            }
+        ]
+    }
+}

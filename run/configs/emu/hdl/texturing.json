@@ -1,0 +1,8 @@
+{
+    "tb" : "hw/tb/files_to_axis.py",
+    "top" : "texturing_emu_wrapper",
+    "files" : [
+        ["#include", ["file_lists/texturing.json"]],
+        ["texturing/", ["texturing_emu_wrapper.vhd"]]
+    ]
+}

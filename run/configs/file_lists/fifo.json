@@ -1,0 +1,6 @@
+{
+    "files" : [
+        ["#include", ["file_lists/pkg.json"]],
+        ["utils/", ["afull_fifo.vhd", "stream_fifo.vhd", "stream_fifo_wrapper.vhd"]]
+    ]
+}

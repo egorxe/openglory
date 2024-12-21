@@ -1,0 +1,9 @@
+{
+    "tb" : "hw/gpu_rtl/vertex_transform/tb/vertex_transform_axis_tb.py",
+    "top" : "vertex_transform_axis_wrapper",
+    "files" : [
+        ["#include", ["file_lists/vertex_transform.json"]],
+        ["vertex_transform/", ["vertex_transform_axis_wrapper.vhd"]]
+    ],
+    "add_files" : ["run/emu/lib/vertex_transform.so"]
+}

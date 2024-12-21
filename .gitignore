@@ -1,0 +1,10 @@
+**/__pycache__
+run/sim
+run/synth
+run/emu
+*.o
+*.a
+*.so
+gles_demos/draw_arrays/*.h
+build
+.vscode
