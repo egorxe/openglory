@@ -270,12 +270,12 @@ GL_API void GL_APIENTRY glOrthof (GLfloat l, GLfloat r, GLfloat b, GLfloat t, GL
 	rm[0] = 2.0 * inv_rml;
 	rm[1] = 0.0;
 	rm[2] = 0.0;
-	rm[3] = -(r + l) *  inv_rml;
+	rm[3] = -(r + l) * inv_rml;
 
 	rm[4] = 0.0;
 	rm[5] = 2.0 * inv_tmb;
 	rm[6] = 0.0;
-	rm[7] = -(t + b) *  inv_tmb;
+	rm[7] = -(t + b) * inv_tmb;
 
 	rm[8] = 0.0;
 	rm[9] = 0.0;
@@ -295,16 +295,12 @@ GL_API void GL_APIENTRY glRotatef (GLfloat angle, GLfloat x, GLfloat y, GLfloat 
     if (angle == 0.0f || (x == 0.0f && y == 0.0f && z == 0.0f))
         return;
 
-    float u[3];
     M4 m;
 
     angle = angle * M_PI / 180.0;
-    u[0] = x;
-    u[1] = y;
-    u[2] = z;
 
     /* normalize vector */
-    float len = u[0] * u[0] + u[1] * u[1] + u[2] * u[2];
+    float len = x*x + y*y + z*z;
     assert (len != 0.0f);
     len = 1.0f / sqrt(len);
 
@@ -338,11 +334,9 @@ GL_API void GL_APIENTRY glRotatef (GLfloat angle, GLfloat x, GLfloat y, GLfloat 
 GL_API void GL_APIENTRY glScalef (GLfloat x, GLfloat y, GLfloat z)
 {
     PglMatrix m; // identity
-
 	m.m[0][0] = x;
 	m.m[1][1] = y;
 	m.m[2][2] = z;
-
 	context.MultMatrix(m);
 }
 
@@ -358,7 +352,7 @@ GL_API void GL_APIENTRY glTexParameterf (GLenum target, GLenum pname, GLfloat pa
 
 GL_API void GL_APIENTRY glTranslatef (GLfloat x, GLfloat y, GLfloat z)
 {
-    M4 m(IDENTITY);
+    PglMatrix m; // identity
     m.m[0][3] = x;
     m.m[1][3] = y;
     m.m[2][3] = z;
@@ -391,7 +385,7 @@ GL_API void GL_APIENTRY glClear (GLbitfield mask)
 GL_API void GL_APIENTRY glClientActiveTexture (GLenum texture)
 {
     STUB(); 
-    // assert(texture == GL_TEXTURE0);
+    assert(texture == GL_TEXTURE0);
 }
 
 GL_API void GL_APIENTRY glColorPointer(GLint size, GLenum type, GLsizei stride, const void *pointer)
@@ -518,7 +512,7 @@ GL_API void GL_APIENTRY glLoadIdentity (void)
 GL_API const GLubyte *GL_APIENTRY glGetString (GLenum name)
 {
     static const GLubyte nullstr[] = "";
-    static const GLubyte vendor[] = "OpenGLory";
+    static const GLubyte vendor[] = "OpenGlory";
     static const GLubyte version[] = "OpenGL ES-CM 1.1";    // actually even far from 1.0 :)
     
     switch (name)
@@ -585,11 +579,6 @@ GL_API void GL_APIENTRY glTexCoordPointer (GLint size, GLenum type, GLsizei stri
     assert(size == 2);
     assert(stride >= 0);
 
-    if (type == GL_BYTE)
-    {
-        // !!!??? works ???!!!
-    }
-
     context.SetVertexArray(PGL_TEXCOORD_ARRAY, size, GlTypeSize(type), stride, (const GLfloat*)pointer);
 }
 
@@ -640,7 +629,6 @@ GL_API void GL_APIENTRY glVertexPointer (GLint size, GLenum type, GLsizei stride
 GL_API void GL_APIENTRY glViewport (GLint x, GLint y, GLsizei width, GLsizei height)
 {
     STUB();
-    // assert(x == 0 && y == 0 && width == 640 && height == 480);
     assert(width >= 0 && height >= 0);
     context.SetViewport({(uint32_t)x, (uint32_t)y, Clamp(width, 0, PGL_WND_SIZE_X), Clamp(height, 0, PGL_WND_SIZE_Y)});
 }

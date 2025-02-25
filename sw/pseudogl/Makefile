@@ -17,8 +17,14 @@ CFLAGS += -DOGLORY_COMM_ETHERBONE=1
 OBJECTS += libeb-c/etherbone.o
 endif
 
-ifdef LITEX_GEN_PATH
-CFLAGS += -DLITEX_PATH=1 -I$(shell realpath $(LITEX_GEN_PATH))
+ifndef LITEX_BOARD
+LITEX_BOARD = last
+endif
+LITEX_INCLUDE_PATH=$(shell realpath ../../run/synth/build/$(LITEX_BOARD)/software/include/)
+
+ifneq ("$(wildcard $(LITEX_INCLUDE_PATH))", "")
+CFLAGS += -DLITEX_PATH=1 -I$(LITEX_INCLUDE_PATH)
+OBJECTS += litex_init.o
 endif
 
 .PHONY: clean demo lib

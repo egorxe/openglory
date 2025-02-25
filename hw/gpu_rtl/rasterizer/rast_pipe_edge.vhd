@@ -9,7 +9,6 @@
 library ieee;
     use ieee.std_logic_1164.all;
     use ieee.numeric_std.all;
-    --use ieee.numeric_std_unsigned.all;
     use ieee.float_pkg.all;
 
 library work;
@@ -196,7 +195,7 @@ begin
             r <= r_rst;
         else
             r <= rin;
-            assert r.new_polygon_in_fifo >= 0;
+            assert r.new_polygon_in_fifo >= 0 severity failure;
         end if;
     end if;
 end process;
@@ -223,7 +222,7 @@ begin
     
     if (bary_busy_i(r.cur_bary_pop) = '0') and (fifo_empty(r.cur_bary_pop) = '0') and (stall_i = '0') then
         v.fifo_pop(r.cur_bary_pop) := '1';
-        if fifo_out(r.cur_bary_pop)(FIFO_NEW_POLYGON_BIT) then
+        if fifo_out(r.cur_bary_pop)(FIFO_NEW_POLYGON_BIT) = '1' then
             v.new_polygon_in_fifo := r.new_polygon_in_fifo - 1;
         end if;
         -- Inc fifo pop counter

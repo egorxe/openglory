@@ -6,34 +6,20 @@ use ieee.std_logic_unsigned.all;
 use work.gpu_pkg.all;
 
 entity gpu_pipe_wb is
-    generic (
-        SCREEN_WIDTH    : integer := 640;
-        SCREEN_HEIGHT   : integer := 480;
-        ADDR_WIDTH      : integer := 32;
-        DATA_WIDTH      : integer := 32;
-        FAST_CLEAR      : boolean := False;     -- simulation only!
-        FB_BASE_REG     : vec32   := X"F0008000";
-        FB_BASE_ADDR0   : vec32   := X"40C00000";
-        FB_BASE_ADDR1   : vec32   := X"40D30000";
-        ZBUF_BASE_ADDR  : vec32   := X"40A00000";
-        DRAM_ADDR       : vec32   := X"40000000";   
-        CAPABILITIES    : vec32   := X"00010001";
-        BOARD_NAME      : string  := "AXKU_040"     -- should be 8 chars
-    );
     port (
-        clk_i           : in  std_logic;
-        gpu_clk_i       : in  std_logic;
-		rst_i           : in  std_logic;
-		gpu_rst_i       : in  std_logic;
-		resetme_o       : out std_logic;
+        clk_i               : in  std_logic;
+        gpu_clk_i           : in  std_logic;
+        rst_i               : in  std_logic;
+        gpu_rst_i           : in  std_logic;
+        resetme_o           : out std_logic;
+        
+        axis_wb_valid_o     : out std_logic;
+        axis_wb_data_o      : out vec32;
+        axis_wb_ready_i     : in  std_logic;
         
         axis_cmd_valid_i    : in  std_logic;
         axis_cmd_data_i     : in  vec32;
         axis_cmd_ready_o    : out std_logic;
-        
-        wb_cmd_valid_o      : out std_logic;
-        wb_cmd_data_o       : out vec32;
-        wb_cmd_ready_i      : in  std_logic;
         
         axis_rast_valid_o   : out std_logic;
         axis_rast_data_o    : out vec32;
@@ -43,53 +29,53 @@ entity gpu_pipe_wb is
         axis_tex_data_i     : in  vec32;
         axis_tex_ready_o    : out std_logic;
         
-        cmd_wb_adr_o    : out std_logic_vector(ADDR_WIDTH-1 downto 0);
-        cmd_wb_dat_o    : out std_logic_vector(DATA_WIDTH-1 downto 0);
-        cmd_wb_sel_o    : out std_logic_vector((DATA_WIDTH/8)-1 downto 0);
-        cmd_wb_we_o     : out std_logic;
-        cmd_wb_stb_o    : out std_logic;
-        cmd_wb_cyc_o    : out std_logic;
-        cmd_wb_dat_i    : in  std_logic_vector(DATA_WIDTH-1 downto 0);
-        cmd_wb_ack_i    : in  std_logic;
-        
-        tex_wb_adr_o    : out std_logic_vector(ADDR_WIDTH-1 downto 0);
-        tex_wb_dat_o    : out std_logic_vector(DATA_WIDTH-1 downto 0);
-        tex_wb_sel_o    : out std_logic_vector((DATA_WIDTH/8)-1 downto 0);
-        tex_wb_we_o     : out std_logic;
-        tex_wb_stb_o    : out std_logic;
-        tex_wb_cyc_o    : out std_logic;
-        tex_wb_dat_i    : in  std_logic_vector(DATA_WIDTH-1 downto 0);
-        tex_wb_ack_i    : in  std_logic;
-        
-        frag_wb_adr_o   : out std_logic_vector(ADDR_WIDTH-1 downto 0);
-        frag_wb_dat_o   : out std_logic_vector(DATA_WIDTH-1 downto 0);
-        frag_wb_sel_o   : out std_logic_vector((DATA_WIDTH/8)-1 downto 0);
-        frag_wb_we_o    : out std_logic;
-        frag_wb_stb_o   : out std_logic;
-        frag_wb_cyc_o   : out std_logic;
-        frag_wb_dat_i   : in  std_logic_vector(DATA_WIDTH-1 downto 0);
-        frag_wb_ack_i   : in  std_logic;
-        
-        fb_wb_adr_o     : out std_logic_vector(ADDR_WIDTH-1 downto 0);
-        fb_wb_dat_o     : out std_logic_vector(DATA_WIDTH-1 downto 0);
-        fb_wb_sel_o     : out std_logic_vector((DATA_WIDTH/8)-1 downto 0);
-        fb_wb_we_o      : out std_logic;
-        fb_wb_stb_o     : out std_logic;
-        fb_wb_cyc_o     : out std_logic;
-        fb_wb_dat_i     : in  std_logic_vector(DATA_WIDTH-1 downto 0);
-        fb_wb_ack_i     : in  std_logic;
-        
-        wbs_adr_i       : in  std_logic_vector(ADDR_WIDTH-1 downto 0);
-        wbs_dat_i       : in  std_logic_vector(DATA_WIDTH-1 downto 0);
-        wbs_sel_i       : in  std_logic_vector((DATA_WIDTH/8)-1 downto 0);
-        wbs_we_i        : in  std_logic;
-        wbs_stb_i       : in  std_logic;
-        wbs_cyc_i       : in  std_logic;
-        wbs_dat_o       : out std_logic_vector(DATA_WIDTH-1 downto 0);
-        wbs_ack_o       : out std_logic;
-        
-        cache_inv_o     : out std_logic_vector(2 downto 0);
-        cache_inv_i     : in  std_logic_vector(2 downto 0)
+        cmd_wb_adr_o        : out std_logic_vector(WB_ADDR_WIDTH-1 downto 0);
+        cmd_wb_dat_o        : out std_logic_vector(WB_DATA_WIDTH-1 downto 0);
+        cmd_wb_sel_o        : out std_logic_vector((WB_DATA_WIDTH/8)-1 downto 0);
+        cmd_wb_we_o         : out std_logic;
+        cmd_wb_stb_o        : out std_logic;
+        cmd_wb_cyc_o        : out std_logic;
+        cmd_wb_dat_i        : in  std_logic_vector(WB_DATA_WIDTH-1 downto 0);
+        cmd_wb_ack_i        : in  std_logic;
+            
+        tex_wb_adr_o        : out std_logic_vector(WB_ADDR_WIDTH-1 downto 0);
+        tex_wb_dat_o        : out std_logic_vector(WB_DATA_WIDTH-1 downto 0);
+        tex_wb_sel_o        : out std_logic_vector((WB_DATA_WIDTH/8)-1 downto 0);
+        tex_wb_we_o         : out std_logic;
+        tex_wb_stb_o        : out std_logic;
+        tex_wb_cyc_o        : out std_logic;
+        tex_wb_dat_i        : in  std_logic_vector(WB_DATA_WIDTH-1 downto 0);
+        tex_wb_ack_i        : in  std_logic;
+            
+        frag_wb_adr_o       : out std_logic_vector(WB_ADDR_WIDTH-1 downto 0);
+        frag_wb_dat_o       : out std_logic_vector(WB_DATA_WIDTH-1 downto 0);
+        frag_wb_sel_o       : out std_logic_vector((WB_DATA_WIDTH/8)-1 downto 0);
+        frag_wb_we_o        : out std_logic;
+        frag_wb_stb_o       : out std_logic;
+        frag_wb_cyc_o       : out std_logic;
+        frag_wb_dat_i       : in  std_logic_vector(WB_DATA_WIDTH-1 downto 0);
+        frag_wb_ack_i       : in  std_logic;
+            
+        fb_wb_adr_o         : out std_logic_vector(WB_ADDR_WIDTH-1 downto 0);
+        fb_wb_dat_o         : out std_logic_vector(WB_DATA_WIDTH-1 downto 0);
+        fb_wb_sel_o         : out std_logic_vector((WB_DATA_WIDTH/8)-1 downto 0);
+        fb_wb_we_o          : out std_logic;
+        fb_wb_stb_o         : out std_logic;
+        fb_wb_cyc_o         : out std_logic;
+        fb_wb_dat_i         : in  std_logic_vector(WB_DATA_WIDTH-1 downto 0);
+        fb_wb_ack_i         : in  std_logic;
+            
+        wbs_adr_i           : in  std_logic_vector(WB_ADDR_WIDTH-1 downto 0);
+        wbs_dat_i           : in  std_logic_vector(WB_DATA_WIDTH-1 downto 0);
+        wbs_sel_i           : in  std_logic_vector((WB_DATA_WIDTH/8)-1 downto 0);
+        wbs_we_i            : in  std_logic;
+        wbs_stb_i           : in  std_logic;
+        wbs_cyc_i           : in  std_logic;
+        wbs_dat_o           : out std_logic_vector(WB_DATA_WIDTH-1 downto 0);
+        wbs_ack_o           : out std_logic;
+            
+        cache_inv_o         : out std_logic_vector(2 downto 0);
+        cache_inv_i         : in  std_logic_vector(2 downto 0)
     );
 end entity gpu_pipe_wb;
 
@@ -118,11 +104,11 @@ architecture arch of gpu_pipe_wb is
             
         wb_stb          : std_logic;
         wb_we           : std_logic;
-        wb_adr          : std_logic_vector(ADDR_WIDTH-1 downto 0);
-        wb_dat_out      : std_logic_vector(DATA_WIDTH-1 downto 0);
-        wb_dat_in       : std_logic_vector(DATA_WIDTH-1 downto 0);
+        wb_adr          : std_logic_vector(WB_ADDR_WIDTH-1 downto 0);
+        wb_dat_out      : std_logic_vector(WB_DATA_WIDTH-1 downto 0);
+        wb_dat_in       : std_logic_vector(WB_DATA_WIDTH-1 downto 0);
             
-        wbs_dat_out     : std_logic_vector(DATA_WIDTH-1 downto 0);
+        wbs_dat_out     : std_logic_vector(WB_DATA_WIDTH-1 downto 0);
         wbs_ack         : std_logic;
     
         sync_cnt        : vec32;
@@ -163,7 +149,7 @@ architecture arch of gpu_pipe_wb is
         ZERO32, ZERO32, ZERO32,
         '0', '0',
         '0', '0',
-        FB_BASE_REG(31 downto 2), DRAM_ADDR(31 downto 2),
+        FB_BASE_REG(31 downto 2), DRAM_BASE_ADDR(31 downto 2),
         ZERO_CMD, ZERO_CMD, '0', '0', '0', ZERO32,
         -- synthesis translate_off
         (others => ' '), note,
@@ -250,7 +236,7 @@ tex_error <= '0';
 else generate
 texturing_unit : entity work.texturing_axis
     generic map (
-        TEX_BASE_ADDR   => "00" & DRAM_ADDR(31 downto 2)
+        TEX_BASE_ADDR   => "00" & DRAM_BASE_ADDR(31 downto 2)
     )
     port map (
         clk_i           => clk_i,
@@ -334,8 +320,8 @@ wbs_ack_o   <= r.wbs_ack;
 wbs_dat_o   <= r.wbs_dat_out;
 
 -- Cmd FIFO
-wb_cmd_valid_o              <= r.wb_cmd_valid;
-wb_cmd_data_o               <= r.wb_cmd_data;
+axis_wb_valid_o             <= r.wb_cmd_valid;
+axis_wb_data_o              <= r.wb_cmd_data;
 input_to_vertex.axis_tvalid <= axis_cmd_valid_i;
 input_to_vertex.axis_tdata  <= axis_cmd_data_i;
 axis_cmd_ready_o            <= vertex_to_input.axis_tready;
@@ -419,7 +405,7 @@ begin
     
     v.wbs_ack       := '0';
     
-    if wb_cmd_ready_i then
+    if axis_wb_ready_i then
         v.wb_cmd_valid := '0';
     end if;
     
@@ -554,7 +540,7 @@ begin
             v.next_state    := IDLE;
             
         when READ_CMDS =>
-            if (wb_cmd_ready_i = '1') then
+            if (axis_wb_ready_i = '1') then
                 v.wb_we := '0';
                 v.wb_stb   := '1';
                 v.wb_adr := ("00" & (cur_cmd_base + r.cmd_cnt));

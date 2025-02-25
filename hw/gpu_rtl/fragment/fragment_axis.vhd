@@ -454,12 +454,11 @@ begin
                 v.frag_wb_stb := '1';
                 v.frag_wb_we := '1';
                 v.frag_wb_dato := extl_vec(max_vec(ZDEPTH_WDT), 32);
-                -- synthesis translate_off
+                -- simulation hack to clear buffers fast --
                 if FAST_CLEAR then
-                    -- simulation hack to clear buffers fast
                     v.frag_wb_adr := max_vec(32);
                 end if;
-                -- synthesis translate_on
+                -------------------------------------------
             elsif not frag_fifo_empty then
                 v.proc_fragment := Vec2Fragment(frag_fifo_out);
                 v.frag_fifo_pop := '1';
@@ -569,12 +568,11 @@ begin
                     v.fb_wb_we      := '1';
                     v.fb_wb_dato    := ZERO32;
                     v.fb_state      := FB_CLEAR;
-                    -- synthesis translate_off
+                    -- simulation hack to clear buffers fast --
                     if FAST_CLEAR then
-                        -- simulation hack to clear buffers fast
                         v.fb_wb_adr := max_vec(32);
                     end if;
-                    -- synthesis translate_on
+                    -------------------------------------------
                 elsif (fb_fifo_empty = '0') then
                     tmp_fb_fragment := Vec2FbFragment(fb_fifo_out);
                     v.fb_wb_stb := '1';

@@ -4,10 +4,10 @@ import ctypes
 import numpy
 import os
 
-COEF_X = 3
-COEF_Y = 2
-# COEF_X = 1
-# COEF_Y = 1
+# COEF_X = 3
+# COEF_Y = 2
+COEF_X = 1
+COEF_Y = 1
 
 class GpuDisplay():
     
@@ -42,7 +42,7 @@ class GpuDisplay():
         
     def PutFragment(self, frag):
         self.PutPixel((frag[0], frag[1], frag[3]))
-        if self.draw_backbuffer and frag[3]:
+        if self.draw_backbuffer:
             if (self.fragments == self.draw_backbuffer):
                 self.fragments = 0
                 pixels = sdl2.ext.pixels2d(self.surface)

@@ -31,6 +31,8 @@ entity rast_pipe_precomp is
         polygon_ack_o       : out std_logic; 
         precomp_ready_o     : out std_logic; 
         precomp_ack_i       : in  std_logic;
+        
+        debug_o             : out vertex_attr_type;
     
         polygon_i           : in  full_polygon_type;
         culling_i           : in  std_logic_vector(1 downto 0);
@@ -91,6 +93,8 @@ architecture behav of rast_pipe_precomp is
     signal fmac_ready           : std_logic;
     
 begin
+
+    debug_o <= r.precomp_polygon(0).attr;
 
     -- Output connections
     precomp_ready_o <= r.precomp_ready;
@@ -229,7 +233,7 @@ begin
                 if fmac_ready then
                     v.precomp_polygon(r.vertex_cnt).attr(r.attr_cnt) := fmac_result;
                     if r.vertex_cnt /= NVERTICES-1 then
-                        v.vertex_cnt := r.vertex_cnt + 1;
+                        v.vertex_cnt := r.vertex_cnt + 1;   -- !!!!!!!! GHDL synth variable bug ???
                         StartFMAC(r.precomp_polygon(v.vertex_cnt).attr(r.attr_cnt), r.precomp_polygon(v.vertex_cnt).coord.w, ZERO32);
                     else
                         v.vertex_cnt := 0;

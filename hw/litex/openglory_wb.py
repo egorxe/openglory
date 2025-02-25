@@ -62,9 +62,9 @@ class WBGpu(Module):
             i_axis_cmd_data_i   = cmd_fifo.source.data,
             o_axis_cmd_ready_o  = cmd_fifo.source.ready,
             
-            o_wb_cmd_valid_o    = cmd_fifo.sink.valid,
-            o_wb_cmd_data_o     = cmd_fifo.sink.data,
-            i_wb_cmd_ready_i    = cmd_fifo.sink.ready,
+            o_axis_wb_valid_o   = cmd_fifo.sink.valid,
+            o_axis_wb_data_o    = cmd_fifo.sink.data,
+            i_axis_wb_ready_i   = cmd_fifo.sink.ready,
             
             i_axis_tex_valid_i  = cc_fifo.source.valid,
             i_axis_tex_data_i   = cc_fifo.source.data,
@@ -146,7 +146,6 @@ def add_openglory_gpu(soc, sdram, reg_addr, gpu_file_list, gpu_cache_sizes_kb = 
         wbm_gpu_buses.append(wishbone.Interface())
         
         if i > 0:
-        # if (i == 1) or (i == 3):
             # Dedicated dram port
             port = sdram.crossbar.get_port()
             port.data_width = 2**int(log2(port.data_width)) # Round to nearest power of 2.

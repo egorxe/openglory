@@ -54,17 +54,15 @@ _io = [
     # HDMI
     ("hdmi", 0,
         Subsignal("r", Pins(
-            "Y30 Y33 Y32 W33 W34 W31 Y31 V34")),
+            "V27 W26 V26 U27 U26 U25 U24 Y22")),
         Subsignal("g", Pins(
             "V32 U34 V31 W30 W29 V29 W28 V28")),
         Subsignal("b", Pins(
-            "V27 W26 V26 U27 U26 U25 U24 Y22")),
+            "Y30 Y33 Y32 W33 W34 W31 Y31 V34")),
         Subsignal("de",        Pins("AA33")),
         Subsignal("clk",       Pins("V33")),
         Subsignal("vsync_n",     Pins("AE31")),
         Subsignal("hsync_n",     Pins("Y28")),
-        # Subsignal("spdif",     Pins("AE12")),
-        # Subsignal("spdif_out", Pins("AF12")),
         IOStandard("LVCMOS18")
     ),
     

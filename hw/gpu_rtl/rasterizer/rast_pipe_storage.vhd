@@ -118,9 +118,13 @@ begin
             sel := 0;
             
             if or_all(not fifo_empty) = '1' then
-                sel := FirstZeroBit(fifo_empty, prio);
+                if EU /= 1 then
+                    sel := FirstZeroBit(fifo_empty, prio);
+                else
+                    sel := 0;
+                end if;
                 if fragment_pop_i then
-                    -- ! assumed that no overlapping fragments from later polygon   !
+                    -- ! assumes that no overlapping fragments from later polygon   !
                     -- ! could be popped earlier than last from prior one           !
                     -- ! because of a static edge-unit/Y-line dependency            !
                     prio := prio + 1;   -- to pop FIFOs equally

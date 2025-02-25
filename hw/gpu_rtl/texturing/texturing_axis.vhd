@@ -398,7 +398,7 @@ begin
             r.req_tex_fragment.x,
             r.req_tex_fragment.y,
             r.req_tex_fragment.z,
-            /*A*/ wb_i.wb_dati(31 downto 24) & /*R*/ wb_i.wb_dati(7 downto 0) & /*G*/ wb_i.wb_dati(15 downto 8) & /*B*/ wb_i.wb_dati(23 downto 16)
+            wb_i.wb_dati
         );
         v.frag_fifo_push := '1';
     end if;

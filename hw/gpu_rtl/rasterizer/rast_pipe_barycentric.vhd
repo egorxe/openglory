@@ -300,9 +300,9 @@ begin
                     rgba := ZERO32;
                 else
                     rgba := FloatToPow2Uint(r.fragment_attr(3), 8) & 
-                            FloatToPow2Uint(r.fragment_attr(0), 8) & 
+                            FloatToPow2Uint(r.fragment_attr(2), 8) & 
                             FloatToPow2Uint(r.fragment_attr(1), 8) & 
-                            FloatToPow2Uint(r.fragment_attr(2), 8);
+                            FloatToPow2Uint(r.fragment_attr(0), 8);
                 end if;
                 v.fragment_out := (
                     r.pipe_edge.p.x, 

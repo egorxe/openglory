@@ -3,10 +3,11 @@
     "files" : [
         ["#include", ["file_lists/gpu_pipe_wb.json"]]
     ],
+    "package"           : "axku040_board_pkg.vhd",
+    "config_vars"       : {"FB_BASE_REG" : "0x0004800", "BOARD_NAME" : "AXKU040 ", "CAPABILITIES" : "0x00010001"},
     "synth" : {
         "board"         : "alinx_axku040",
         "litex_params"  : ["--l2-size", "16384", "--with-etherbone", "--cpu-type=vexriscv", "--vivado-max-threads", "20", "--vivado-synth-directive", "RuntimeOptimized"],
-        "generics"      : {"FB_BASE_REG" : "X\"F0004800\"", "BOARD_NAME" : "AXKU_040", "CAPABILITIES" : "X\"00010001\""},
         "sys_frequency" : "200000000",
         "gpu_frequency" : "100000000"
     }

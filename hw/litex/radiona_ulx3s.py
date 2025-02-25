@@ -106,9 +106,10 @@ class BaseSoC(SoCCore):
         with_video_framebuffer = False,
         with_spi_flash         = False,
         with_uart              = False,
+        with_usb               = True,
         
         gpu_file_list = [],
-        gpu_clk_freq = 25e6,
+        gpu_clk_freq = 20e6,
         
         **kwargs):
             
@@ -119,13 +120,13 @@ class BaseSoC(SoCCore):
         platform = radiona_ulx3s.Platform(device=device, revision=revision, toolchain=toolchain)
         
         # CRG --------------------------------------------------------------------------------------
-        with_usb_pll   = False #kwargs.get("uart_name", None) == "usb_acm"
+        with_usb_pll   = (kwargs.get("uart_name", None) == "usb_acm") or with_usb
         with_video_pll = with_video_terminal or with_video_framebuffer
         self.crg = _CRG(platform, sys_clk_freq, gpu_clk_freq, with_usb_pll, with_video_pll, sdram_rate=sdram_rate)
 
         # SoCCore ----------------------------------------------------------------------------------
         SoCCore.__init__(self, platform, sys_clk_freq, ident="LiteX SoC on ULX3S", **kwargs)
-
+        
         # SDR SDRAM --------------------------------------------------------------------------------
         if not self.integrated_main_ram_size:
             sdrphy_cls = HalfRateGENSDRPHY if sdram_rate == "1:2" else GENSDRPHY
@@ -137,12 +138,13 @@ class BaseSoC(SoCCore):
                 l2_cache_size = kwargs.get("l2_size", 8192)
             )
         
-        # import valentyusb.usbcore.io as usbio
-        # from valentyusb.usbcore.cpu import epfifo, dummyusb
-        # usb_pads = platform.request("usb")
-        # usb_iobuf = usbio.IoBuf(usb_pads.d_p, usb_pads.d_n, usb_pads.pullup)
-        # self.submodules.usb = dummyusb.DummyUsb(usb_iobuf, debug=True)
-        # self.bus.add_master("wb_usb_master", self.usb.debug_bridge.wishbone)
+        if with_usb:
+            import valentyusb.usbcore.io as usbio
+            from valentyusb.usbcore.cpu import epfifo, dummyusb
+            usb_pads = platform.request("usb")
+            usb_iobuf = usbio.IoBuf(usb_pads.d_p, usb_pads.d_n, usb_pads.pullup)
+            self.submodules.usb = dummyusb.DummyUsb(usb_iobuf, debug=True)
+            self.bus.add_master("wb_usb_master", self.usb.debug_bridge.wishbone)
         
 
         # Video ------------------------------------------------------------------------------------
@@ -154,7 +156,7 @@ class BaseSoC(SoCCore):
                 self.add_video_framebuffer(phy=self.videophy, timings="640x480@60Hz", clock_domain="hdmi")
                 
         # OpenGlory GPU ---------------------------------------------------------------------------------
-        add_openglory_gpu(self, self.sdram, 0x90000000, gpu_file_list, [0, 1, 1])
+        add_openglory_gpu(self, self.sdram, 0x90000000, gpu_file_list, [4, 4, 4])
 
         # SPI Flash --------------------------------------------------------------------------------
         if with_spi_flash:
@@ -205,7 +207,7 @@ class BaseSoC(SoCCore):
             format = format,
             clock_domain          = clock_domain,
             clock_faster_than_sys = vtg.video_timings["pix_clk"] >= self.sys_clk_freq,
-            fifo_depth = 8192
+            fifo_depth = 2048
         )
         self.add_module(name=name, module=vfb)
 
@@ -240,9 +242,11 @@ def main():
     viopts.add_argument("--with-video-terminal",    action="store_true", help="Enable Video Terminal (HDMI).")
     viopts.add_argument("--with-video-framebuffer", action="store_true", help="Enable Video Framebuffer (HDMI).")
     
-    parser.add_target_argument("--gpu-clk-freq", default=100e6, type=float, help="GPU clock frequency.")
+    parser.add_target_argument("--gpu-clk-freq", default=20e6, type=float, help="GPU clock frequency.")
     parser.add_target_argument("--gpu-file-list", nargs='+', help="List of GPU HDL sources.")
     args = parser.parse_args()
+    
+    args.bus_timeout=1e11   # without it USB/UARTbone accesses will fail from time to time
 
     soc = BaseSoC(
         device                 = args.device,

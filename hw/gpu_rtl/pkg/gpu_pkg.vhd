@@ -12,6 +12,8 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.float_pkg.all;
 
+use work.gpu_config_pkg.all;
+
 package gpu_pkg is
 
 
@@ -31,13 +33,6 @@ package gpu_pkg is
     constant MAX_RESOLUTION_POW     : integer           := 10;      
     constant MAX_RESOLUTION         : integer           := 2**MAX_RESOLUTION_POW;
     
-    -- AXI-stream constants
-    constant GLOBAL_AXIS_DATA_WIDTH : integer           := 32;
-    constant GLOBAL_AXIS_KEEP_WIDTH : integer           := 4;
-    constant GLOBAL_AXIS_ID_WIDTH   : integer           := 4;
-    constant GLOBAL_AXIS_DEST_WIDTH : integer           := 4;
-    constant GLOBAL_AXIS_USER_WIDTH : integer           := 4;
-    
     -- General float constants
     constant FLOAT_WDT              : integer           := 32;
     constant FLOAT_SIGN_WDT         : integer           := 1;
@@ -51,33 +46,39 @@ package gpu_pkg is
     constant FLOAT_MANT_LO          : integer           := 0;
     
     -- Usefull float constants
-    constant ZF         : float32                       := to_float(0);
-    constant HALF32     : std_logic_vector(31 downto 0) := ("0" & "01111110" & "00000000000000000000000");
-    constant ONE32      : std_logic_vector(31 downto 0) := ("0" & "01111111" & "00000000000000000000000");
-    constant TWO32      : std_logic_vector(31 downto 0) := ("0" & "10000000" & "00000000000000000000000");
-    constant MINUSONE32 : std_logic_vector(31 downto 0) := ("1" & "01111111" & "00000000000000000000000");
-    constant MINUSTWO32 : std_logic_vector(31 downto 0) := ("1" & "10000000" & "00000000000000000000000");
-    constant FL32_255   : std_logic_vector(31 downto 0) := ("0" & "10000110" & "11111110000000000000000");
-    constant FL32_640   : std_logic_vector(31 downto 0) := to_slv(to_float(real(640)));
-    constant FL32_480   : std_logic_vector(31 downto 0) := to_slv(to_float(real(480)));
-
-    -- FPU constants, check fpupack in riscv_fpu_pkg.vhd
-    constant FPU_ADD        : std_logic_vector(2 downto 0) := "000";    --3 ticks
-    constant FPU_SUBSTRACT  : std_logic_vector(2 downto 0) := "001";    --3 ticks
-    constant FPU_MULTIPLY   : std_logic_vector(2 downto 0) := "010";    --3 ticks
-    constant FPU_DIVIDE     : std_logic_vector(2 downto 0) := "011";    --12 ticks
-    constant FPU_F2I        : std_logic_vector(2 downto 0) := "100";    --1 tick
-    constant FPU_I2F        : std_logic_vector(2 downto 0) := "101";    --1 tick
-    --Zero vector
-    constant FPU_ZERO_VECTOR: std_logic_vector(30 downto 0) := "0000000000000000000000000000000";
-    -- FPU_INFinty FP format
-    constant FPU_INF  : std_logic_vector(30 downto 0) := "1111111100000000000000000000000";
-    -- FPU_QNAN (Quit Not a Number) FP format (without sign bit)
-    constant FPU_QNAN : std_logic_vector(30 downto 0) := "1111111110000000000000000000000";
-    -- FPU_SNAN (Signaling Not a Number) FP format (without sign bit)
-    constant FPU_SNAN : std_logic_vector(30 downto 0) := "1111111100000000000000000000001";
+    constant ZF                     : float32                       := to_float(0);
+    constant HALF32                 : std_logic_vector(31 downto 0) := ("0" & "01111110" & "00000000000000000000000");
+    constant ONE32                  : std_logic_vector(31 downto 0) := ("0" & "01111111" & "00000000000000000000000");
+    constant TWO32                  : std_logic_vector(31 downto 0) := ("0" & "10000000" & "00000000000000000000000");
+    constant MINUSONE32             : std_logic_vector(31 downto 0) := ("1" & "01111111" & "00000000000000000000000");
+    constant MINUSTWO32             : std_logic_vector(31 downto 0) := ("1" & "10000000" & "00000000000000000000000");
+    constant FL32_255               : std_logic_vector(31 downto 0) := ("0" & "10000110" & "11111110000000000000000");
+    constant FL32_640               : std_logic_vector(31 downto 0) := to_slv(to_float(real(640)));
+    constant FL32_480               : std_logic_vector(31 downto 0) := to_slv(to_float(real(480)));
     
-    constant TEXTURING_UNITS        : integer := 1;
+    -- Configuration values from board config package
+    constant BOARD_NAME             : string                        := work.gpu_config_pkg.BOARD_NAME;
+    constant CAPABILITIES           : std_logic_vector(31 downto 0) := work.gpu_config_pkg.CAPABILITIES;
+    constant FAST_CLEAR             : boolean                       := work.gpu_config_pkg.FAST_CLEAR;
+    constant TEXTURING_UNITS        : integer                       := work.gpu_config_pkg.TEXTURING_UNITS;
+    constant SCREEN_WIDTH           : integer                       := work.gpu_config_pkg.SCREEN_WIDTH;
+    constant SCREEN_HEIGHT          : integer                       := work.gpu_config_pkg.SCREEN_HEIGHT;
+    constant FB_BASE_REG            : std_logic_vector(31 downto 0) := work.gpu_config_pkg.FB_BASE_REG;
+    constant DRAM_BASE_ADDR         : std_logic_vector(31 downto 0) := work.gpu_config_pkg.DRAM_BASE_ADDR;
+    constant FB_BASE_ADDR0          : std_logic_vector(31 downto 0) := work.gpu_config_pkg.FB_BASE_ADDR0;
+    constant FB_BASE_ADDR1          : std_logic_vector(31 downto 0) := work.gpu_config_pkg.FB_BASE_ADDR1;
+    constant ZBUF_BASE_ADDR         : std_logic_vector(31 downto 0) := work.gpu_config_pkg.ZBUF_BASE_ADDR;
+    
+    -- Stream constants
+    constant GLOBAL_AXIS_DATA_WIDTH : integer                       := 32;
+    constant GLOBAL_AXIS_KEEP_WIDTH : integer                       := 4;
+    constant GLOBAL_AXIS_ID_WIDTH   : integer                       := 4;
+    constant GLOBAL_AXIS_DEST_WIDTH : integer                       := 4;
+    constant GLOBAL_AXIS_USER_WIDTH : integer                       := 4;
+                
+    -- Wishbone constants              
+    constant WB_ADDR_WIDTH          : integer                       := 32;
+    constant WB_DATA_WIDTH          : integer                       := 32;
 
     ------------------------------------------------------------------------
     ------------------------------ TYPES -----------------------------------
@@ -270,17 +271,11 @@ package gpu_pkg is
     function to_vec32(a : integer) return std_logic_vector; -- integer->std_logic_vector 32 bit
     function to_vec32(a : float32) return std_logic_vector; -- float32->std_logic_vector 32 bit (cut to unsigned??)
     function to_vec32(a : real) return std_logic_vector;
-    function fl32_to_int_as_vec32(a : vec32) return vec32;  -- vec32 as float32 -> vec32 as integer
-    function fl32_to_int_as_vec32_r(a : vec32) return vec32; -- vec32 as float32 -> vec32 as integer with rounding down
-    function int_to_fl32_as_vec32(a : vec32) return vec32;  -- vec32 as int -> vec32 as float32
-    function int_to_fl32(a : integer) return vec32;         -- int -> vec32 as float32
 
     function to_uint(a : std_logic_vector) return integer;  -- std_logic_vector->unsigned integer
     function to_uint(a : std_logic) return integer;         -- std_logic_vector->unsigned integer
     function to_uint(a : float32) return integer;           -- float32->unsigned integer
     function to_sint(a : std_logic_vector) return integer;  -- std_logic_vector->signed integer
-    function fl32_to_int(a : vec32) return integer;         -- vec32 as float32 -> integer
-    function fl32_to_int_r(a : vec32) return integer;       -- vec32 as float32 -> integer with rounding down
 
     function to_real(value : std_logic_vector) return real; -- std_logic_vector->real
 
@@ -399,262 +394,6 @@ package body gpu_pkg is
         return to_slv(tf(a));
     end;
 
-    function fl32_to_int_as_vec32 (a : vec32) return vec32 is --float32 to integer
-        variable exponent, buf : integer;
-        variable buff : std_logic_vector(1 downto 0);
-        variable buff2 : std_logic_vector(31 downto 0) := (others => '0');
-        variable reminder, treshold : unsigned(22 downto 0) := (others => '0');
-
-    begin
-        -- float32 IEEE754-2008 structure: (-1)^S * (1.M) * 2^(E - 127)
-        -- sign exponent mantissa
-        --   31|30....23|22.....0
-
-        --special cases
-        case (a(30 downto 0)) is
-            when FPU_ZERO_VECTOR =>
-                return x"00000000";
-
-            when FPU_INF | FPU_QNAN | FPU_SNAN => 
-                return x"00000000";
-
-            when others =>
-                null;
-        end case;
-
-        if a(30 downto 23) = x"FF" then 
-            return x"00000000";
-        end if;
-
-        --processing
-        exponent := to_integer(unsigned(a(30 downto 23))) - 127;
-        
-        if (exponent > 30) then --overflow, 31 position for sign, 30 - MSB
-            buff2 := x"7FFFFFFF";
-            buf := to_integer(unsigned(buff2));  --2**31 - 1;
-
-        elsif (exponent > 23) then
-            buff2(exponent downto exponent - 23) := '1' & a(22 downto 0);
-            buf := to_integer(unsigned(buff2)); 
-
-        elsif (exponent > 1) then
-            buf := to_integer(unsigned('1' & a(22 downto 22 - (exponent - 1)))); --rounded down
-            
-            if (exponent /= 23) then
-                if (exponent = 22) then
-                    reminder(0) := a(0);
-
-                elsif (exponent < 22) then 
-                    reminder(22 - exponent downto 0) := unsigned(a(22 - exponent downto 0));
-                    treshold(22 - exponent downto 0) := (others => '1');
-                    treshold := treshold srl 1;
-                end if;
-
-                if (reminder > treshold) then --rounding
-                    buf := buf + 1;
-                end if;
-            end if;
-
-        elsif (exponent = 1) then
-            buff := '1' & a(22);
-            buf := to_integer(unsigned(buff)); --rounded down
-            reminder(21 downto 0) := unsigned(a(21 downto 0));
-            treshold(21 downto 0) := (others => '1');
-            treshold := treshold srl 1;
-
-            if (reminder > treshold) then --rounding
-                buf := buf + 1;
-            end if;
-
-        elsif (exponent = 0) then
-            buf := 1;
-            reminder := unsigned(a(22 downto 0));
-            treshold(22 downto 0) := (others => '1');
-            treshold := treshold srl 1;
-
-            if (reminder > treshold) then --rounding
-                buf := buf + 1;
-            end if;
-
-        else
-            buf := 0; 
-            reminder := unsigned(a(22 downto 0));
-            treshold(22 downto 0) := (others => '1');
-            treshold := treshold srl 1;
-
-            if (reminder > treshold) then --rounding
-                buf := buf + 1;
-            end if;
-        end if;
-
-        if (a(31) = '1') then 
-            buf := -buf;
-        end if;
-
-        return std_logic_vector(to_signed(buf, 32));
-    end function;
-
-    function fl32_to_int_as_vec32_r (a : vec32) return vec32 is --float32 to integer
-        variable exponent, buf : integer;
-        variable buff : std_logic_vector(1 downto 0);
-        variable buff2 : std_logic_vector(31 downto 0) := (others => '0');
-        variable reminder : unsigned(22 downto 0) := (others => '0');
-
-    begin
-        -- float32 IEEE754-2008 structure: (-1)^S * (1.M) * 2^(E - 127)
-        -- sign exponent mantissa
-        --   31|30....23|22.....0
-
-        --special cases
-        case (a(30 downto 0)) is
-            when FPU_ZERO_VECTOR =>
-                return x"00000000";
-
-            when FPU_INF | FPU_QNAN | FPU_SNAN => 
-                return x"00000000";
-
-            when others =>
-                null;
-        end case;
-
-        if a(30 downto 23) = x"FF" then 
-            return x"00000000";
-        end if;
-
-        --processing
-        exponent := to_integer(unsigned(a(30 downto 23))) - 127;
-        
-        if (exponent > 30) then --overflow, 31 position for sign, 30 - MSB
-            buff2 := x"7FFFFFFF";
-            buf := to_integer(unsigned(buff2));  --2**31 - 1;
-
-        elsif (exponent > 23) then
-            buff2(exponent downto exponent - 23) := '1' & a(22 downto 0);
-            buf := to_integer(unsigned(buff2)); 
-
-        elsif (exponent > 1) then
-            buf := to_integer(unsigned('1' & a(22 downto 22 - (exponent - 1)))); --rounded down absolute value
-            
-            if (exponent /= 23) then
-                if (exponent = 22) then
-                    reminder(0) := a(0);
-
-                elsif (exponent < 22) then 
-                    reminder(22 - exponent downto 0) := unsigned(a(22 - exponent downto 0));
-                end if;
-
-                if (reminder > 0 and a(31) = '1') then --rounding down
-                    buf := buf + 1;
-                end if;
-            end if;
-
-        elsif (exponent = 1) then
-            buff := '1' & a(22);
-            buf := to_integer(unsigned(buff)); --rounded down
-            reminder(21 downto 0) := unsigned(a(21 downto 0));
-
-            if (reminder > 0 and a(31) = '1') then --rounding down
-                buf := buf + 1;
-            end if;
-
-        elsif (exponent = 0) then
-            buf := 1;
-            reminder := unsigned(a(22 downto 0));
-
-            if (reminder > 0 and a(31) = '1') then --rounding down
-                buf := buf + 1;
-            end if;
-
-        else
-            buf := 0; 
-
-            if (a(31) = '1') then --rounding down
-                buf := buf + 1;
-            end if;
-        end if;
-
-        if (a(31) = '1') then 
-            buf := -buf;
-        end if;
-
-        return std_logic_vector(to_signed(buf, 32));
-    end function;
-
-    function int_to_fl32_as_vec32 (a : vec32) return vec32 is
-        variable absVal : integer;
-        variable exponent : integer := 31;
-        variable mantissa : std_logic_vector(22 downto 0) := (others => '0');
-        variable reminder, treshold: unsigned(6 downto 0) := (others => '0');
-        variable buff : std_logic_vector(30 downto 0);
-        variable buff1 : std_logic_vector(31 downto 0);
-        variable buff2 : unsigned(30 downto 0);
-
-    begin
-        absVal := to_integer(signed(a));
-        if (absVal < 0) then
-            absVal := -absVal;
-        end if;
-
-        buff1 := std_logic_vector(to_signed(absVal, 32));
-        buff := buff1(30 downto 0);
-        for i in 30 downto 0 loop
-            if (buff(i) = '1') then
-                exponent := i;
-                exit;
-            end if;    
-        end loop;
-
-        if (exponent >= 31) then --'1' wasn't find
-            return x"00000000";
-
-        elsif (exponent > 24) then 
-            mantissa := buff(exponent - 1 downto exponent - 23);  --rounded down
-            reminder(exponent - 24 downto 0) := unsigned(buff(exponent - 24 downto 0));
-            treshold(exponent - 24 downto 0) := (others => '1');
-            treshold := treshold srl 1; --/2
-
-            --rounding
-            if (reminder > treshold) then
-                if (unsigned(mantissa) /= unsigned(max_vec(23))) then
-                    mantissa := std_logic_vector(unsigned(mantissa) + 1);
-
-                else
-                    mantissa := (others => '0');
-                    exponent := exponent + 1;
-                end if;
-            end if;
-        
-        elsif (exponent = 24) then
-            mantissa := buff(exponent - 1 downto exponent - 23); --rounded down
-            reminder(0) := buff(0);
-
-            --rounding
-            if (reminder > treshold) then
-                if (unsigned(mantissa) /= unsigned(max_vec(23))) then
-                    mantissa := std_logic_vector(unsigned(mantissa) + 1);
-
-                else
-                    mantissa := (others => '0');
-                    exponent := exponent + 1;
-                end if;
-            end if;
-
-        elsif (exponent > 0) then
-            buff2 := unsigned(buff) sll (23 - exponent); --for synthesizability
-            mantissa := std_logic_vector(buff2(22 downto 0));
-        end if;
-
-        --report "Num " & integer'image(to_integer(signed(a))) & " absVal " & to_string(buff);
-        --report "S:" & std_logic'image(a(31)) & " E:" & integer'image(exponent) & " M:" & to_string(mantissa);
-        
-        return a(31) & std_logic_vector(to_unsigned(exponent + 127, 8)) & mantissa; 
-    end function int_to_fl32_as_vec32;
-
-    function int_to_fl32(a : integer) return vec32 is
-    begin
-        return int_to_fl32_as_vec32(std_logic_vector(to_signed(a, 32)));
-    end function;
-
     ----------------------------------to integer------------------------------------------------
 
 
@@ -678,16 +417,6 @@ package body gpu_pkg is
     function to_sint(a : std_logic_vector) return integer is
     begin
         return to_integer(signed(a));
-    end;
-
-    function fl32_to_int(a : vec32) return integer is
-    begin
-        return to_integer(signed(fl32_to_int_as_vec32(a)));
-    end;
-
-    function fl32_to_int_r(a : vec32) return integer is
-    begin
-        return to_integer(signed(fl32_to_int_as_vec32_r(a)));
     end;
 
     ----------------------------------to real------------------------------------------------

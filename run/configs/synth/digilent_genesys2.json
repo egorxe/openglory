@@ -1,0 +1,14 @@
+{
+    "top" : "gpu_pipe_wb",
+    "files" : [
+        ["#include", ["file_lists/gpu_pipe_wb.json"]]
+    ],
+    "package"           : "genesys2_board_pkg.vhd",
+    "config_vars"       : {"FB_BASE_REG" : "0xF0008000", "BOARD_NAME" : "Genesys2", "CAPABILITIES" : "0x00000001", "EDGE_UNITS_POW" : "2", "BARY_UNITS_PER_EDGE" : "4"},
+    "synth" : {
+        "board"         : "digilent_genesys2",
+        "litex_params"  : ["--l2-bytes=65536", "--l2-size=0", "--with-ethernet", "--xlen=64", "--cpu-type=naxriscv", "--with-coherent-dma", "--bus-standard=axi-lite", "--scala-args=rvc=true,rvf=true,rvd=true,alu-count=2,decode-count=2", "--with-sdcard", "--vivado-max-threads", "20", "--vivado-synth-directive", "RuntimeOptimized", "--vivado-place-directive", "Explore", "--vivado-route-directive", "AggressiveExplore"],
+        "sys_frequency" : "125000000",
+        "gpu_frequency" : "75000000"
+    }
+}

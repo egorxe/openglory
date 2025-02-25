@@ -1,0 +1,11 @@
+{
+    "top" : "gpu_pipe_wb_tbwrapper",
+    "tb"    : "hw/tb/cocotb_etherbone.py",
+    "files" : [
+        ["#include", ["file_lists/gpu_pipe_wb.json"]],
+        ["top/tb/", ["gpu_pipe_wb_tbwrapper.vhd"]]
+    ],
+    "package" : "sim_board_pkg.vhd",
+    "add_files" : ["sw/emu/etherbone.py", "sw/emu/gpu_display.py"],
+    "config_vars" : {"BOARD_NAME" : "HDL sim ", "FB_BASE_REG" : "0x3800", "FAST_CLEAR" : "True"}
+}

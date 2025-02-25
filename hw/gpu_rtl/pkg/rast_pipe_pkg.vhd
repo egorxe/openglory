@@ -8,12 +8,13 @@
 
 
 library ieee;
-    use ieee.std_logic_1164.all;
-    use ieee.numeric_std.all;
-    use ieee.std_logic_unsigned.all;
-    use ieee.float_pkg.all;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use ieee.std_logic_unsigned.all;
+use ieee.float_pkg.all;
 
-    use work.gpu_pkg.all;
+use work.gpu_config_pkg.all;
+use work.gpu_pkg.all;
     
 package rast_pipe_pkg is
 
@@ -23,9 +24,9 @@ package rast_pipe_pkg is
 
     constant EDGE_FUNC_CNT          : integer := 3;
     constant SCREEN_COORD_WDT       : integer := MAX_RESOLUTION_POW;
-    constant EDGE_UNITS_POW         : integer := 0;
+    constant EDGE_UNITS_POW         : integer := work.gpu_config_pkg.EDGE_UNITS_POW;
     constant EDGE_UNITS             : integer := 2**EDGE_UNITS_POW;
-    constant BARY_UNITS_PER_EDGE    : integer := 1;
+    constant BARY_UNITS_PER_EDGE    : integer := work.gpu_config_pkg.BARY_UNITS_PER_EDGE;
     constant TOTAL_BARY_UNITS       : integer := EDGE_UNITS*BARY_UNITS_PER_EDGE;
 
 ------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 // API for OpenGlory toy GPU
 
+#include <ostream>
 #define PROFILE         0
 #define SKIP_FRAMES     0 
 #define SKIP_PUTBUF     0
@@ -60,10 +61,7 @@ PseudoGLContext::PseudoGLContext() :
     // Get capabilities
     capabilities = oglory_reg_read32(GPU_REG_CAP_ADDR);
     // Init functions mentioned in capabilities
-    if (capabilities & GPU_CAP_LITEXDMA)
-        init_video_dma();
-    if (capabilities & GPU_CAP_ADV7511)
-        init_adv7511(0x72);
+    oglory_hardware_init(capabilities);
     lighting_supported = capabilities & GPU_CAP_LIGHTING;
     
     // Set buffers
@@ -87,7 +85,8 @@ PseudoGLContext::PseudoGLContext() :
     name_reg = oglory_reg_read32(GPU_REG_BOARD1_ADDR);
     strncpy(tmp_name+4, (char*)&name_reg, 4);
     tmp_name[8] = '\0';
-    board_name = std::string("OpenGLory on ") + tmp_name;
+    board_name = std::string("OpenGlory on ") + tmp_name;
+    board_name.erase(board_name.find_last_not_of(" ")+1); // trim
 }
 
 // Simple profiler
@@ -185,6 +184,7 @@ void PseudoGLContext::PutToBuf(uint32_t w, bool committable)
         CommitCmdBuffer();
     assert(buffer_elements<PGL_MAX_CMD_BUF_ELEMENTS);
     oglory_mem_write32(w, dev_buf_ptr[current_dev_buf]+buffer_elements*4);
+    
     buffer_elements++;
     #if SKIP_PUTBUF
     }
@@ -261,14 +261,13 @@ void PseudoGLContext::PutVertexDataToBuffer(int array, int vo, int i, const void
     {
         size_t offn = v.stride*(GetValWithSize(indices, indice_size, vo + i)) + n*v.type;
         uint8_t* off = ((uint8_t*)v.ptr) + offn;
-        // uint8_t* off = ((uint8_t*)v.ptr) + (indice_size ? 0 : vo + i);
         switch(v.type)
         {
             case(1):
-                PutToBuf((*(uint8_t*)off)/255.f);  // !!! only for colors?
+                PutToBuf((*(uint8_t*)off)/255.f);  // only for colors?
                 break;
             case(2):
-                PutToBuf(FloatToU32((*(uint16_t*)off)));  // / 65535. ??
+                PutToBuf(FloatToU32((*(uint16_t*)off)));  // / 65535. ?
                 break;
             case(4):
             {

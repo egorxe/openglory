@@ -146,7 +146,6 @@ architecture behav of rast_pipe_incr is
     end function;
     
     type reg_type is record
-        --point           : point_coord_array;
         bounds          : rect_coord_type;
         x               : screen_coord_array;
         y               : screen_coord_array;
@@ -154,11 +153,8 @@ architecture behav of rast_pipe_incr is
         precomp_data    : precomp_data_out_type;
         to_edge         : incr_to_edge_array;
         
-        --same_line       : std_logic_vector(EDGE_UNITS-1 downto 0);
         next_polygon    : std_logic;
-        --polygon_done    : std_logic_vector(EDGE_UNITS-1 downto 0);
         polygon_ack     : std_logic;
-        --busy            : integer range 0 to EDGE_UNITS;
         busy            : integer range -EDGE_UNITS to EDGE_UNITS;
     end record;
     
@@ -168,7 +164,7 @@ architecture behav of rast_pipe_incr is
         '0', '0', 0
     );
     signal r, rin   : reg_type;
-
+    
 begin
 
 EDGE_CONNS : for i in 0 to EDGE_UNITS-1 generate

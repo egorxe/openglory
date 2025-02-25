@@ -34,7 +34,8 @@ const uint32_t GPU_MEMBUF_ADDR              = 0x40000000;
 const uint32_t GPU_CMD_BUF_ADDR             = GPU_MEMBUF_ADDR + 0x900000;
 const uint32_t GPU_CMD_BUF_SIZE             = 0x00040000;
 const uint32_t GPU_CMD_FB_SIZE              = 0x200000; // ! depends on resolution !
-const uint32_t GPU_TEX_BUF_ADDR             = 0x43000000; //GPU_CMD_BUF_ADDR + GPU_CMD_BUF_SIZE + GPU_CMD_FB_SIZE*2;
+// const uint32_t GPU_TEX_BUF_ADDR             = 0x43000000; //GPU_CMD_BUF_ADDR + GPU_CMD_BUF_SIZE + GPU_CMD_FB_SIZE*2;
+const uint32_t GPU_TEX_BUF_ADDR             = 0x41000000; //GPU_CMD_BUF_ADDR + GPU_CMD_BUF_SIZE + GPU_CMD_FB_SIZE*2;
 const uint32_t GPU_ADDR_MASK                = 0x0FFFFFFF;
 
 const uint32_t GPU_REG_BASE_ADDR            = 0x90000000;
@@ -62,9 +63,11 @@ const uint32_t GPU_STAT_EMPTY               = 0x10;
 const uint32_t GPU_STAT_FLUSH_MASK          = 0x07;
 
 // Capabilities reg
-const uint32_t GPU_CAP_LITEXDMA             = 0x00000001;
-const uint32_t GPU_CAP_LIGHTING             = 0x00000100;
-const uint32_t GPU_CAP_ADV7511              = 0x00010000;
+const uint32_t GPU_CAP_VIDEODMA             = 0x00000001;   // requires video DMA init
+const uint32_t GPU_CAP_TEXTURING            = 0x000000F0;   // number of texturing units
+const uint32_t GPU_CAP_LIGHTING             = 0x00000100;   // has lighting support
+const uint32_t GPU_CAP_ADV7511              = 0x00010000;   // video output via ADV7511, requires I2C init
+const uint32_t GPU_CAP_SDRAMINIT            = 0x00020000;   // requires manual SDRAM init
 
 // State commands bits
 const uint32_t GPU_STATE_RAST_CULLBACK      = 0x00000001;
